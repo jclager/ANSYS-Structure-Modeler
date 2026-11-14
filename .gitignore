@@ -1,0 +1,12 @@
+resultados/
+__pycache__/
+*.rst
+*.db
+*.err
+*.log
+*.out
+*.esav
+*.full
+*.emat
+*.mode
+*.lock

@@ -1,0 +1,38 @@
+{
+  "versao": "1.0.0",
+  "titulo": "Placa furada flambagem",
+  "tipo": "placa",
+  "elemento": "SHELL181",
+  "material": {
+    "nome": "Aço estrutural ASTM A36",
+    "E": 200000000000.0,
+    "nu": 0.3,
+    "rho": 7850,
+    "fy": 250000000.0,
+    "Et": 2000000000.0
+  },
+  "geometria": {
+    "a": 1.0,
+    "b": 0.5,
+    "t": 0.01,
+    "furo": "circular",
+    "xc": 0.5,
+    "yc": 0.25,
+    "d": 0.125
+  },
+  "malha": {
+    "esize": 0.025
+  },
+  "apoio": "ssss",
+  "carga": {
+    "tipo": "uniaxial",
+    "valor": 1000000.0
+  },
+  "analise": {
+    "tipo": "flambagem_nl",
+    "n_modos": 4,
+    "n_subpassos": 50,
+    "imperfeicao": 0.00025,
+    "mult_lambda": 1.5
+  }
+}

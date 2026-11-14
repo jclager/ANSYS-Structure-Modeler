@@ -1,0 +1,31 @@
+{
+  "versao": "1.0.0",
+  "titulo": "Tubo",
+  "tipo": "casca_cil",
+  "elemento": "SHELL181",
+  "material": {
+    "nome": "Aço estrutural ASTM A36",
+    "E": 200000000000.0,
+    "nu": 0.3,
+    "rho": 7850,
+    "fy": 250000000.0,
+    "Et": 2000000000.0
+  },
+  "geometria": {
+    "R": 0.5,
+    "L": 2.0,
+    "t": 0.005
+  },
+  "malha": {
+    "esize": 0.07854
+  },
+  "apoio": "base_eng_topo_guia",
+  "carga": {
+    "tipo": "axial",
+    "valor": 1000000.0
+  },
+  "analise": {
+    "tipo": "flambagem",
+    "n_modos": 4
+  }
+}
