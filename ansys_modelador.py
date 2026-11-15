@@ -32,7 +32,7 @@ import sys
 import unicodedata
 from pathlib import Path
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 # ---------------------------------------------------------------------------
 # Bibliotecas de dados
@@ -560,7 +560,7 @@ def gerar_blocos(cfg):
     t = a["tipo"]
     modelo = (["/FILNAME,modelo,0", f"/TITLE,{ascii_apdl(cfg['titulo'])}", "/PREP7", "*SET,CF,1.0"]
               + apdl_material_secao(cfg) + apdl_geometria_malha(cfg) + apdl_apoios(cfg)
-              + apdl_cargas(cfg) + ["FINISH"])
+              + apdl_cargas(cfg) + ["SAVE,modelo,db", "FINISH"])
     blocos = [("Modelo (pré-processamento)", modelo, True)]
 
     def estatico_pstres():
@@ -598,6 +598,7 @@ def gerar_blocos(cfg):
                                            "LNSRCH,ON", "OUTRES,ALL,ALL", "NCNV,2", "SOLVE", "FINISH"], False),
                    ("Pós-processamento", apdl_pos_estatico(cfg, nl=True), False),
                    ("Curva carga x deslocamento", apdl_pos_curva(), False)]
+    blocos.append(("Gravar banco de dados (modelo.db)", ["FINISH", "SAVE,modelo,db"], False))
     return blocos
 
 
@@ -648,7 +649,26 @@ def executar(cfg, blocos, pasta, exec_file=None):
         graficos(mapdl, cfg, pasta, res)
     finally:
         mapdl.exit()
+        limpar_temporarios(pasta)
     return res
+
+
+def limpar_temporarios(pasta):
+    """Apaga arquivos temporários do ANSYS (processos paralelos, .bat, .lock, .__tmp__)."""
+    import re
+    import time
+    padrao = re.compile(r"^(modelo\d+\..+|.*\.bat|.*\.lock|\.__tmp__\..+)$", re.IGNORECASE)
+    for _ in range(3):
+        restantes = []
+        for arq in pasta.iterdir():
+            if arq.is_file() and padrao.match(arq.name):
+                try:
+                    arq.unlink()
+                except OSError:
+                    restantes.append(arq)
+        if not restantes:
+            return
+        time.sleep(2)
 
 
 def coletar(mapdl, cfg):
@@ -682,16 +702,16 @@ def graficos(mapdl, cfg, pasta, res):
     try:
         mapdl.post1()
         mapdl.eplot(savefig=str(pasta / "malha.png"), off_screen=True)
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"    [!] figura da malha não gerada: {e}")
     t = cfg["analise"]["tipo"]
     try:
         mapdl.post1()
         mapdl.set(1, 1) if t in ("modal", "flambagem") else mapdl.set("LAST")
         nome = {"modal": "modo1.png", "flambagem": "modo_flambagem1.png"}.get(t, "deslocamento.png")
         mapdl.post_processing.plot_nodal_displacement("NORM", savefig=str(pasta / nome), off_screen=True)
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"    [!] figura {nome} não gerada: {e}")
     if "curva" in res:
         try:
             import matplotlib
@@ -705,8 +725,8 @@ def graficos(mapdl, cfg, pasta, res):
             ax.grid(alpha=0.3)
             fig.tight_layout()
             fig.savefig(pasta / "curva_carga_desloc.png", dpi=150)
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"    [!] gráfico da curva não gerado: {e}")
 
 
 def imprimir_resultados(cfg, res, pasta):

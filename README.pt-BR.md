@@ -155,6 +155,8 @@ python ansys_modelador.py --exec-file "C:/Program Files/ANSYS Inc/v242/ansys/bin
 | Arquivo | Conteúdo |
 |---|---|
 | `modelo.mac` | APDL completo, roda direto no ANSYS |
+| `modelo.db` | Banco de dados do ANSYS: abra com **File → Resume from** para ver o modelo |
+| `modelo.rst` | Arquivo de resultados do ANSYS |
 | `config.json` | Respostas do questionário |
 | `resultados.json` | Deslocamento e tensão máximos, frequências, fatores λ, carga última |
 | `malha.png` | Malha |
@@ -178,6 +180,7 @@ python ansys_modelador.py --config exemplos/placa_furada_flambagem_elastoplastic
 - Na flambagem elasto-plástica, a carga última é a do último subpasso convergido (controle por carga).
 - Cargas de borda em placas e cascas são distribuídas igualmente entre os nós da borda.
 - Pressão em casca cilíndrica: confira o sentido da normal das áreas.
+- Treliça (LINK180): um elemento por barra e sem rigidez de flexão, por isso a análise modal mostra só os modos globais da treliça, não a vibração lateral de cada barra.
 - A tensão máxima em vigas (BEAM188) é estimada pela soma das tensões axial e de flexão nas fibras extremas.
 - Valide os primeiros modelos com soluções analíticas conhecidas (por exemplo, viga biapoiada, placa de Timoshenko) antes de usar em trabalho final.
 
@@ -189,7 +192,7 @@ python ansys_modelador.py --config exemplos/placa_furada_flambagem_elastoplastic
 | ANSYS não encontrado | Informe o executável com `--exec-file` |
 | Erro de licença | Verifique o servidor de licenças do ANSYS |
 | Análise não linear para antes do fim | Normal após o colapso: a carga última é a do último subpasso convergido. Aumente os subpassos se parar cedo demais |
-| Figuras não geradas | Os gráficos dependem do PyVista (instalado com o PyMAPDL); os resultados numéricos continuam em `resultados.json` |
+| Figuras não geradas | Instale o PyVista com `pip install pyvista`; o motivo aparece na tela e os resultados numéricos continuam em `resultados.json` |
 
 ## 10. Mapa do repositório
 

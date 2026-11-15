@@ -157,6 +157,8 @@ python ansys_modelador.py --exec-file "C:/Program Files/ANSYS Inc/v242/ansys/bin
 | File | Content |
 |---|---|
 | `modelo.mac` | Complete APDL input, runs directly in ANSYS |
+| `modelo.db` | ANSYS database: open with **File → Resume from** to see the model |
+| `modelo.rst` | ANSYS results file |
 | `config.json` | Questionnaire answers |
 | `resultados.json` | Maximum displacement and stress, frequencies, λ factors, ultimate load |
 | `malha.png` | Mesh |
@@ -180,6 +182,7 @@ python ansys_modelador.py --config exemplos/placa_furada_flambagem_elastoplastic
 - In elasto-plastic buckling, the ultimate load is that of the last converged substep (load control).
 - Edge loads on plates and shells are distributed equally among the edge nodes.
 - Pressure on the cylindrical shell: check the direction of the area normals.
+- Truss (LINK180): one element per member and no bending stiffness, so the modal analysis shows only the global modes of the truss, not the lateral vibration of each member.
 - The maximum stress in beams (BEAM188) is estimated by adding axial and bending stresses at the extreme fibers.
 - Validate your first models against known analytical solutions (for example, a simply supported beam or a Timoshenko plate) before using them in final work.
 
@@ -191,7 +194,7 @@ python ansys_modelador.py --config exemplos/placa_furada_flambagem_elastoplastic
 | ANSYS not found | Provide the executable with `--exec-file` |
 | License error | Check the ANSYS license server |
 | Nonlinear analysis stops before the end | Expected after collapse: the ultimate load is that of the last converged substep. Increase the substeps if it stops too early |
-| Figures not generated | Plots depend on PyVista (installed with PyMAPDL); numerical results remain in `resultados.json` |
+| Figures not generated | Install PyVista with `pip install pyvista`; the reason is shown on screen and numerical results remain in `resultados.json` |
 
 ## 10. Repository map
 
